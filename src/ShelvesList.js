@@ -58,7 +58,7 @@ class ShelvesList extends React.Component {
         </div>
         <div className="list-books-content">
           {booksList.length === 0 ? (
-            <div>you don't have any books yet</div>
+            <div>You don't have any books yet please <Link to="/search">add some</Link></div>
             ) : (
 
             <div>
