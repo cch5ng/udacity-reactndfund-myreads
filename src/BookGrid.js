@@ -18,19 +18,15 @@ class BookGrid extends React.Component {
   render() {
     let bookList = [];
     return (
-        return (
           <div className="book-grid-container">
             <ol className="books-grid">
               bookList.map((book) => {
-                return(
-                  <li>
-                    <Book></Book>
-                  </li>
-                )
+                <li>
+                  <Book></Book>
+                </li>
               });
             </ol>
           </div>
-        )
     )
   }
 }

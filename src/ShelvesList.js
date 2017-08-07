@@ -20,13 +20,11 @@ class ShelvesList extends React.Component {
     return (
       <div className="list-books-content">
         <div>
-        bookShelves.map((shelf) => {
-          return (
+        {bookShelves.map((shelf) => {
             <div>
               <Shelf></Shelf>
             </div>
-          )
-        })
+        })}
         </div>
       </div>
     )

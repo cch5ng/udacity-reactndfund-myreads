@@ -6,7 +6,7 @@ class Book extends React.Component {
     bookShelfChangerValue: "none"
   }
 
-  this.handleBookShelfChanger = this.handleBookShelfChanger.bind(this);
+  //this.handleBookShelfChanger = this.handleBookShelfChanger.bind(this);
 
   // TODO figure out where the initial bookShelfChangerValue is coming from
   // TODO add value attrib to select element
