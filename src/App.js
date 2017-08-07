@@ -30,7 +30,6 @@ class BooksApp extends React.Component {
 
   componentDidMount() {
     BooksAPI.getAll().then(books => {
-      console.log('books: ' + books);
       this.setState({booksList: books, isLoading: false});
     });
   }
@@ -43,27 +42,32 @@ class BooksApp extends React.Component {
   handleBookShelfChanger(book, shelfStr) {
     console.log('book title: ' + book.title);
     console.log('shelfStr: ' + shelfStr);
-    let curIdx = -1;
-    for (var i = 0; i < this.state.booksList.length; i++) {
-      if (book.title === this.state.booksList[i].title) {
-        curIdx = i;
-        console.log('i: ' + i);
-        break;
-      }
-    }
+    // let curIdx = -1;
+    // for (var i = 0; i < this.state.booksList.length; i++) {
+    //   if (book.title === this.state.booksList[i].title) {
+    //     curIdx = i;
+    //     console.log('i: ' + i);
+    //     break;
+    //   }
+    // }
 
-    // case book moved from a diff shelf
-    if (curIdx > -1) {
-      const slicePref = this.state.booksList.slice(0, i);
-      const sliceSuf = this.state.booksList.slice(i + 1);
-      let updateBook = Object.assign({}, this.state.booksList[i]);
-      updateBook.shelf = shelfStr;
-      this.setState({booksList: [...slicePref, updateBook, ...sliceSuf]})      
-    }
+    // // case book moved from a diff shelf
+    // if (curIdx > -1) {
+    //   const slicePref = this.state.booksList.slice(0, i);
+    //   const sliceSuf = this.state.booksList.slice(i + 1);
+    //   let updateBook = Object.assign({}, this.state.booksList[i]);
+    //   updateBook.shelf = shelfStr;
+    //   this.setState({booksList: [...slicePref, updateBook, ...sliceSuf]})      
+    // }
 
-    // case book moved from search to shelf
-    // TODO test
-    this.setState({booksList: [...this.state.booksList, book]});
+    // // case book moved from search to shelf
+    // // TODO test
+    // this.setState({booksList: [...this.state.booksList, book]});
+    BooksAPI.update(book, shelfStr).then((json) => {
+      BooksAPI.getAll().then(books => {
+        this.setState({booksList: books, isLoading: false});
+      })
+    })
 
   }
 

@@ -1,11 +1,24 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import * as BooksAPI from './BooksAPI'
+import BookGrid from './BookGrid'
 import './App.css'
+
+const BookShelf = ({ booksList, handleBookShelfChanger }) => (
+  <div className="bookshelf-books">
+    {booksList.length ? (
+      <BookGrid booksList={booksList} handleBookShelfChanger={handleBookShelfChanger}/>
+    ) : (
+      <p><em>No books here! <Link to="/search">Add some</Link></em></p>
+    )}
+  </div>
+)
 
 class Search extends React.Component {
   state = {
-    bookShelfChangerValue: "none"
   }
+
+  searchInputHandler = this.searchInputHandler.bind(this);
 
   //this.handleBookShelfChanger = this.handleBookShelfChanger.bind(this);
 
@@ -13,16 +26,27 @@ class Search extends React.Component {
   // TODO add value attrib to select element
   // TODO some dynamic data like cover img url, select value, title, author
 
-  handleBookShelfChanger(ev) {
-    this.setState({bookShelfChangerValue: ev.target.value});
+  searchInputHandler(ev) {
+    if (ev.target.value.length) {
+      BooksAPI.search(ev.target.value, 25).then(books => {
+        console.log('search books: ' + books);
+        console.log('len search books: ' + books.length);
+        this.setState({booksList: books})
+      })
+      console.log('user entered: ' + ev.target.value)
+    }
   }
 
   render() {
+    let booksList;
+    if (this.state.booksList) {
+      booksList = this.state.booksList
+    }
     return (
       <div className="search-books">
         <div className="search-books-bar">
           <Link to="/">
-            <a className="close-search"></a>            
+            <span className="close-search"></span>            
           </Link>
           <div className="search-books-input-wrapper">
             {/* 
@@ -33,12 +57,17 @@ class Search extends React.Component {
               However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
               you don't find a specific author or title. Every search is limited by search terms.
             */}
-            <input type="text" placeholder="Search by title or author"/>
+            <input type="text" placeholder="Search by title or author" onChange={this.searchInputHandler}/>
             
           </div>
         </div>
         <div className="search-books-results">
-          <ol className="books-grid"></ol>
+          {booksList ? (
+              <BookShelf booksList={this.state.booksList} handleBookShelfChanger={this.props.handleBookShelfChanger}></BookShelf>
+            ) : (
+              null
+            )
+          }
         </div>
       </div>
     )
