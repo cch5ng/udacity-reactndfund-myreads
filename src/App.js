@@ -1,4 +1,5 @@
 import React from 'react'
+import { BrowserRouter } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 
@@ -12,6 +13,21 @@ class BooksApp extends React.Component {
      */
     showSearchPage: true
   }
+
+  componentDidMount() {
+    let books = BooksAPI.getAll();
+    // TODO where to save and how to pass it to where it needs go
+
+  }
+
+  // TODO learn the lifecycle functions better; like test and be able to explain well
+
+  // TODO break down on paper, what components are needed
+  // TODO need to define routes in render (2-3 routes)
+  //  default view (3 shelves); all books view
+  // TODO need to define which controls and handlers are necessary
+  // control for plus sign (links to /search)
+  // somewhere need handlers for the drop down lists (not sure where)
 
   render() {
     return (
