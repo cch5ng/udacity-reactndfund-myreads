@@ -3,7 +3,7 @@ import './App.css'
 
 class Book extends React.Component {
   state = {
-    bookShelfChangerValue: "none"
+    //bookShelfChangerValue: "none"
   }
 
   //this.handleBookShelfChanger = this.handleBookShelfChanger.bind(this);
@@ -17,6 +17,13 @@ class Book extends React.Component {
   }
 
   render() {
+    let book;
+    if (this.props.abook) {
+      book = this.props.abook;
+      console.log('Book book: ' + book);
+    }
+
+
     return (
       <div className="book">
         <div className="book-top">

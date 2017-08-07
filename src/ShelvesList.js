@@ -1,8 +1,18 @@
 import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
-import Shelf from './Shelf'
+import BookGrid from './BookGrid'
 import './App.css'
+
+const BookShelf = ({ booksList, handleBookShelfChanger }) => (
+  <div className="bookshelf-books">
+    {booksList.length ? (
+      <BookGrid booksList={booksList} handleBookShelfChanger={handleBookShelfChanger}/>
+    ) : (
+      <p><em>No books here! <Link to="/search">Add some</Link></em></p>
+    )}
+  </div>
+)
 
 class ShelvesList extends React.Component {
   state = {
@@ -16,17 +26,71 @@ class ShelvesList extends React.Component {
   // on which shelf type
 
   render() {
-    let bookShelves = [];
+    const booksList = this.props.booksList;
+    let currentlyReading;
+    let wantToRead;
+    let read;
+    let none;
+    if (this.props.booksList.length) {
+      console.log('ShelvesList this.props.booksList: ' + this.props.booksList);
+      console.log('book type: ' + typeof this.props.booksList[0]);
+
+      currentlyReading = this.props.booksList.filter((book) => {
+        return book.shelf === "currentlyReading";
+      })
+      wantToRead = this.props.booksList.filter((book) => {
+        return book.shelf === "wantToRead";
+      })
+      read = this.props.booksList.filter((book) => {
+        return book.shelf === "read";
+      })
+
+      console.log('len currentlyReading: ' + currentlyReading.length);
+      console.log('len wantToRead: ' + wantToRead.length);
+      console.log('len read: ' + read.length);
+    }
+    //                <BookGrid booksList={wantToRead} ></BookGrid>
+    //                <BookGrid booksList={read} ></BookGrid>
     return (
-      <div className="list-books-content">
-        <div>
-        {bookShelves.map((shelf) => {
+      <div className="list-books">
+        <div className="list-books-title">
+          <h1>MyReads</h1>
+        </div>
+        <div className="list-books-content">
+          {booksList.length === 0 ? (
+            <div>you don't have any books yet</div>
+            ) : (
+
             <div>
-              <Shelf></Shelf>
+              <div className="bookshelf">
+                <h2 className="bookshelf-title">Currently Reading</h2>
+                <div className="bookshelf-books">
+                  {currentlyReading.length > 0 ? <BookShelf booksList={currentlyReading} updateBookShelf={this.props.updateBookShelf} handleBookShelfChanger={this.props.handleBookShelfChanger} ></BookShelf> : null}
+                </div>
+              </div>
+              <div className="bookshelf">
+                <h2 className="bookshelf-title">Want to Read</h2>
+                <div className="bookshelf-books">
+                  {wantToRead.length > 0 ? <BookShelf booksList={wantToRead} updateBookShelf={this.props.updateBookShelf} handleBookShelfChanger={this.props.handleBookShelfChanger} ></BookShelf> : null}
+                </div>
+              </div>
+              <div className="bookshelf">
+                <h2 className="bookshelf-title">Read</h2>
+                <div className="bookshelf-books">
+                  {read.length > 0 ? <BookShelf booksList={read} updateBookShelf={this.props.updateBookShelf} handleBookShelfChanger={this.props.handleBookShelfChanger} ></BookShelf> : null}
+                </div>
+              </div>
             </div>
-        })}
+            )
+          }
+
+        <div className="open-search">
+          <Link to="/search">
+            Add a book
+          </Link>
         </div>
       </div>
+    </div>
     )
   }
 }

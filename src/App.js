@@ -18,7 +18,8 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     showSearchPage: false,
-    booksList: []
+    booksList: [],
+    isLoading: true
   }
 
   //this.updateBookShelf = this.updateBookShelf.bind(this);
@@ -28,13 +29,19 @@ class BooksApp extends React.Component {
   componentDidMount() {
     BooksAPI.getAll().then(books => {
       console.log('books: ' + books);
-      this.setState({booksList: books});
+      this.setState({booksList: books, isLoading: false});
     });
   }
 
   // EVENT HANDLERS
   searchLinkHandler(ev) {
     // TODO (maybe move to ShelvesList?)
+  }
+
+  handleBookShelfChanger(book, shelfStr) {
+    console.log('book title: ' + book.title);
+    console.log('shelfStr: ' + shelfStr);
+    //this.setState({bookShelfChangerValue: ev.target.value});
   }
 
   // case where book is existing but the shelf needs updating, default view
@@ -62,16 +69,21 @@ class BooksApp extends React.Component {
   // somewhere need handlers for the drop down lists (not sure where)
 
   render() {
+    const { booksList, isLoading } = this.state;
+
     return (
       <Router>
         <div className="app">
-
-            <Route exact path="/" component={ShelvesList} />
-            <Route path="/search" component={Search} />
-
+          <Route exact path="/" render={()=> (
+            isLoading ? (
+              <p className="loading-message">Loading...</p>
+            ) : (
+              <ShelvesList updateBookShelf={this.updateBookShelf} handleBookShelfChanger={this.handleBookShelfChanger} booksList={this.state.booksList} />
+            )
+          )}/>
+          <Route path="/search" render={()=><Search addBook={this.addBook} />} />
         </div>
       </Router>
-
     )
   }
 }
