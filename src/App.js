@@ -25,6 +25,8 @@ class BooksApp extends React.Component {
   //this.updateBookShelf = this.updateBookShelf.bind(this);
   //this.addBook = this.addBook.bind(this);
   //this.searchLinkHandler = this.searchLinkHandler.bind(this);
+  // correct syntax; don't use this on the left
+  handleBookShelfChanger = this.handleBookShelfChanger.bind(this);
 
   componentDidMount() {
     BooksAPI.getAll().then(books => {
@@ -41,23 +43,28 @@ class BooksApp extends React.Component {
   handleBookShelfChanger(book, shelfStr) {
     console.log('book title: ' + book.title);
     console.log('shelfStr: ' + shelfStr);
-    //this.setState({bookShelfChangerValue: ev.target.value});
-  }
+    let curIdx = -1;
+    for (var i = 0; i < this.state.booksList.length; i++) {
+      if (book.title === this.state.booksList[i].title) {
+        curIdx = i;
+        console.log('i: ' + i);
+        break;
+      }
+    }
 
-  // case where book is existing but the shelf needs updating, default view
-  updateBookShelf(book) {
-    // TODO
-    // copy existing bookList
-    // get the index of the list element matching the book arg
-    // do a slice (splice) to replace the old book with new book?
-    // or just update the prop manually?
-    // update the state
-  }
+    // case book moved from a diff shelf
+    if (curIdx > -1) {
+      const slicePref = this.state.booksList.slice(0, i);
+      const sliceSuf = this.state.booksList.slice(i + 1);
+      let updateBook = Object.assign({}, this.state.booksList[i]);
+      updateBook.shelf = shelfStr;
+      this.setState({booksList: [...slicePref, updateBook, ...sliceSuf]})      
+    }
 
-  // case where book is new and added to shelf from search view
-  addBook(book) {
-    // TODO check spread operator syntax
-    this.setState({booksList: [...this.state.booksList, book]})
+    // case book moved from search to shelf
+    // TODO test
+    this.setState({booksList: [...this.state.booksList, book]});
+
   }
 
   // TODO learn the lifecycle functions better; like test and be able to explain well
@@ -78,10 +85,10 @@ class BooksApp extends React.Component {
             isLoading ? (
               <p className="loading-message">Loading...</p>
             ) : (
-              <ShelvesList updateBookShelf={this.updateBookShelf} handleBookShelfChanger={this.handleBookShelfChanger} booksList={this.state.booksList} />
+              <ShelvesList handleBookShelfChanger={this.handleBookShelfChanger} booksList={this.state.booksList} />
             )
           )}/>
-          <Route path="/search" render={()=><Search addBook={this.addBook} />} />
+          <Route path="/search" render={()=><Search handleBookShelfChanger={this.handleBookShelfChanger} />} />
         </div>
       </Router>
     )
