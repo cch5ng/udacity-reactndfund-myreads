@@ -11,20 +11,46 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    showSearchPage: true
+    showSearchPage: true,
+    booksList: []
   }
+
+  this.updateBookShelf = this.updateBookShelf.bind(this);
+  this.addBook = this.addBook.bind(this);
+  this.searchLinkHandler = this.searchLinkHandler.bind(this);
 
   componentDidMount() {
     let books = BooksAPI.getAll();
+    console.log('books: ' + books);
     // TODO where to save and how to pass it to where it needs go
 
   }
 
+  // EVENT HANDLERS
+  searchLinkHandler(ev) {
+    // TODO (maybe move to ShelvesList?)
+  }
+
+  // case where book is existing but the shelf needs updating, default view
+  updateBookShelf(book) {
+    // TODO
+    // copy existing bookList
+    // get the index of the list element matching the book arg
+    // do a slice (splice) to replace the old book with new book?
+    // or just update the prop manually?
+    // update the state
+  }
+
+  // case where book is new and added to shelf from search view
+  addBook(book) {
+    // TODO check spread operator syntax
+    this.setState({booksList: [...this.state.booksList, book]})
+  }
+
   // TODO learn the lifecycle functions better; like test and be able to explain well
 
-  // TODO break down on paper, what components are needed
   // TODO need to define routes in render (2-3 routes)
-  //  default view (3 shelves); all books view
+  // default route / ; search route /search
   // TODO need to define which controls and handlers are necessary
   // control for plus sign (links to /search)
   // somewhere need handlers for the drop down lists (not sure where)
