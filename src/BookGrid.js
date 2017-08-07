@@ -2,37 +2,37 @@ import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
+import Book from './Book'
 
-class BooksApp extends React.Component {
+class BookGrid extends React.Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: true
   }
 
-  componentDidMount() {
-    let books = BooksAPI.getAll();
-    // TODO where to save and how to pass it to where it needs go
+  // componentDidMount() {
+  // }
 
-  }
-
-  // TODO learn the lifecycle functions better; like test and be able to explain well
-
-  // TODO break down on paper, what components are needed
-  // TODO need to define routes in render (2-3 routes)
-  //  default view (3 shelves); all books view
-  // TODO need to define which controls and handlers are necessary
-  // control for plus sign (links to /search)
-  // somewhere need handlers for the drop down lists (not sure where)
+  // TODO here apply flexbox try for 4col grid desk
+  // tablet 3col
+  // phone 2col
 
   render() {
+    let bookList = [];
     return (
+        return (
+          <div className="book-grid-container">
+            <ol className="books-grid">
+              bookList.map((book) => {
+                return(
+                  <li>
+                    <Book></Book>
+                  </li>
+                )
+              });
+            </ol>
+          </div>
+        )
     )
   }
 }
 
-export default BooksApp
+export default BookGrid

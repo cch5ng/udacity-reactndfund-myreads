@@ -10,6 +10,7 @@ class Book extends React.Component {
 
   // TODO figure out where the initial bookShelfChangerValue is coming from
   // TODO add value attrib to select element
+  // TODO some dynamic data like cover img url, select value, title, author
 
   handleBookShelfChanger(ev) {
     this.setState({bookShelfChangerValue: ev.target.value});
