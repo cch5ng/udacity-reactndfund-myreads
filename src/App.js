@@ -18,69 +18,34 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     showSearchPage: false,
-    booksList: [],
+    books: [],
     isLoading: true
   }
 
-  //this.updateBookShelf = this.updateBookShelf.bind(this);
-  //this.addBook = this.addBook.bind(this);
-  //this.searchLinkHandler = this.searchLinkHandler.bind(this);
-  // correct syntax; don't use this on the left
   handleBookShelfChanger = this.handleBookShelfChanger.bind(this);
 
   componentDidMount() {
     BooksAPI.getAll().then(books => {
-      this.setState({booksList: books, isLoading: false});
+      this.setState({books, isLoading: false});
     });
   }
 
   // EVENT HANDLERS
-  searchLinkHandler(ev) {
-    // TODO (maybe move to ShelvesList?)
-  }
-
   handleBookShelfChanger(book, shelfStr) {
-    console.log('book title: ' + book.title);
-    console.log('shelfStr: ' + shelfStr);
-    // let curIdx = -1;
-    // for (var i = 0; i < this.state.booksList.length; i++) {
-    //   if (book.title === this.state.booksList[i].title) {
-    //     curIdx = i;
-    //     console.log('i: ' + i);
-    //     break;
-    //   }
-    // }
-
-    // // case book moved from a diff shelf
-    // if (curIdx > -1) {
-    //   const slicePref = this.state.booksList.slice(0, i);
-    //   const sliceSuf = this.state.booksList.slice(i + 1);
-    //   let updateBook = Object.assign({}, this.state.booksList[i]);
-    //   updateBook.shelf = shelfStr;
-    //   this.setState({booksList: [...slicePref, updateBook, ...sliceSuf]})      
-    // }
-
-    // // case book moved from search to shelf
-    // // TODO test
-    // this.setState({booksList: [...this.state.booksList, book]});
     BooksAPI.update(book, shelfStr).then((json) => {
-      BooksAPI.getAll().then(books => {
-        this.setState({booksList: books, isLoading: false});
-      })
+    });
+    book.shelf = shelfStr;
+
+    // TODO working but should refactor
+    let books1 = this.state.books.filter(oBook => {
+      return book.id !== oBook.id
     })
-
+    let books2 = books1.concat(book);
+    this.setState({ books: books2 });
   }
-
-  // TODO learn the lifecycle functions better; like test and be able to explain well
-
-  // TODO need to define routes in render (2-3 routes)
-  // default route / ; search route /search
-  // TODO need to define which controls and handlers are necessary
-  // control for plus sign (links to /search)
-  // somewhere need handlers for the drop down lists (not sure where)
 
   render() {
-    const { booksList, isLoading } = this.state;
+    const { books, isLoading } = this.state;
 
     return (
       <Router>
@@ -89,10 +54,10 @@ class BooksApp extends React.Component {
             isLoading ? (
               <p className="loading-message">Loading...</p>
             ) : (
-              <ShelvesList handleBookShelfChanger={this.handleBookShelfChanger} booksList={this.state.booksList} />
+              <ShelvesList handleBookShelfChanger={this.handleBookShelfChanger} books={this.state.books} />
             )
           )}/>
-          <Route path="/search" render={()=><Search handleBookShelfChanger={this.handleBookShelfChanger} />} />
+          <Route path="/search" render={()=><Search handleBookShelfChanger={this.handleBookShelfChanger} books={this.state.books} />} />
         </div>
       </Router>
     )

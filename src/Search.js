@@ -4,10 +4,11 @@ import * as BooksAPI from './BooksAPI'
 import BookGrid from './BookGrid'
 import './App.css'
 
-const BookShelf = ({ booksList, handleBookShelfChanger }) => (
+// TODO refactor, this component is redundant
+const BookShelf = ({ books, handleBookShelfChanger }) => (
   <div className="bookshelf-books">
-    {booksList.length ? (
-      <BookGrid booksList={booksList} handleBookShelfChanger={handleBookShelfChanger}/>
+    {books.length ? (
+      <BookGrid books={books} handleBookShelfChanger={handleBookShelfChanger}/>
     ) : (
       <p><em>No books here! <Link to="/search">Add some</Link></em></p>
     )}
@@ -16,31 +17,60 @@ const BookShelf = ({ booksList, handleBookShelfChanger }) => (
 
 class Search extends React.Component {
   state = {
+    query: "",
+    searchResults: []
   }
 
   searchInputHandler = this.searchInputHandler.bind(this);
+  updateBookShelves = this.updateBookShelves.bind(this);
+  dictBookIdToShelf = this.dictBookIdToShelf.bind(this);
 
-  //this.handleBookShelfChanger = this.handleBookShelfChanger.bind(this);
-
-  // TODO figure out where the initial bookShelfChangerValue is coming from
-  // TODO add value attrib to select element
-  // TODO some dynamic data like cover img url, select value, title, author
-
+  // TODO know that this basic logic for search and updating book shelf
+  // works but should try to refactor it
   searchInputHandler(ev) {
-    if (ev.target.value.length) {
-      BooksAPI.search(ev.target.value, 25).then(books => {
-        console.log('search books: ' + books);
-        console.log('len search books: ' + books.length);
-        this.setState({booksList: books})
+    let query = ev.target.value;
+    if (query.length) {
+      BooksAPI.search(query, 25).then(results => {
+        if (results.length) {
+          let newSearchResults = this.updateBookShelves(results)
+          this.setState({searchResults: newSearchResults, query})
+        } else {
+          this.setState({searchResults: [], query})
+        }
       })
-      console.log('user entered: ' + ev.target.value)
     }
   }
 
+  updateBookShelves(searchResults) {
+    let updatedSearchResults = []
+    let idShelfDict = this.dictBookIdToShelf();
+
+    searchResults.forEach(book => {
+      if (idShelfDict[book.id]) {
+        book.shelf = idShelfDict[book.id]
+      } else {
+        book.shelf = "none"
+      }
+      updatedSearchResults.push(book);
+    })
+
+    return updatedSearchResults;
+  }
+
+  // HELPERS
+  dictBookIdToShelf() {
+    let dict = {};
+
+    this.props.books.forEach(book => {
+      dict[book.id] = book.shelf
+    })
+    return dict;
+  }
+
   render() {
-    let booksList;
-    if (this.state.booksList) {
-      booksList = this.state.booksList
+    let searchResults;
+    if (this.state.searchResults) {
+      searchResults = this.state.searchResults
     }
     return (
       <div className="search-books">
@@ -49,21 +79,12 @@ class Search extends React.Component {
             <span className="close-search"></span>            
           </Link>
           <div className="search-books-input-wrapper">
-            {/* 
-              NOTES: The search from BooksAPI is limited to a particular set of search terms.
-              You can find these search terms here:
-              https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-              
-              However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-              you don't find a specific author or title. Every search is limited by search terms.
-            */}
-            <input type="text" placeholder="Search by title or author" onChange={this.searchInputHandler}/>
-            
+            <input type="text" placeholder="Search by title or author" onChange={this.searchInputHandler}/>            
           </div>
         </div>
         <div className="search-books-results">
-          {booksList ? (
-              <BookShelf booksList={this.state.booksList} handleBookShelfChanger={this.props.handleBookShelfChanger}></BookShelf>
+          {searchResults ? (
+              <BookShelf books={this.state.searchResults} handleBookShelfChanger={this.props.handleBookShelfChanger}></BookShelf>
             ) : (
               null
             )
