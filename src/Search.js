@@ -2,18 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import BookGrid from './BookGrid'
+import BookShelf from './BookShelf'
 import './App.css'
-
-// TODO refactor, this component is redundant
-const BookShelf = ({ books, handleBookShelfChanger }) => (
-  <div className="bookshelf-books">
-    {books.length ? (
-      <BookGrid books={books} handleBookShelfChanger={handleBookShelfChanger}/>
-    ) : (
-      <p><em>No books here! <Link to="/search">Add some</Link></em></p>
-    )}
-  </div>
-)
 
 class Search extends React.Component {
   state = {
