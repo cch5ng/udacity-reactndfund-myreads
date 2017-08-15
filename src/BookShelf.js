@@ -1,3 +1,4 @@
+import React from 'react'
 import { Link } from 'react-router-dom'
 import BookGrid from './BookGrid'
 
@@ -11,3 +12,5 @@ const BookShelf = ({ books, handleBookShelfChanger }) => (
     )}
   </div>
 )
+
+export default BookShelf;
